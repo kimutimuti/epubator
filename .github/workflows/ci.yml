@@ -3,13 +3,6 @@ name: CI
 on:
   # Manual triggers
   workflow_dispatch:
-    inputs:
-      git-ref:
-        description: Git Ref (Optional)
-        required: false
-      dry-run:
-        description: Creates a draft release
-        required: false
 
 jobs:
   build:
@@ -52,8 +45,8 @@ jobs:
           mkdir -p ~/.gradle
           cp .github/runner-files/ci-gradle.properties ~/.gradle/gradle.properties
 
-      - name: Build Release APK
-        run: bash ./gradlew assembleRelease --stacktrace
+      - name: Build Debug APK
+        run: bash ./gradlew assembleDebug --stacktrace
         
       - name: Setup build tool version variable
         shell: bash
@@ -61,17 +54,6 @@ jobs:
           BUILD_TOOL_VERSION=$(ls /usr/local/lib/android/sdk/build-tools/ | tail -n 1)
           echo "BUILD_TOOL_VERSION=$BUILD_TOOL_VERSION" >> $GITHUB_ENV
           echo Last build tool version is: $BUILD_TOOL_VERSION
-        
-      - name: Sign APK          
-        uses: r0adkll/sign-android-release@v1
-        with:
-          releaseDirectory: app/build/outputs/apk/release
-          signingKeyBase64: ${{ secrets.SIGNING_KEY }}
-          alias: ${{ secrets.ALIAS }}
-          keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
-          keyPassword: ${{ secrets.KEY_PASSWORD }}
-        env:
-          BUILD_TOOLS_VERSION: ${{ env.BUILD_TOOL_VERSION }}
 
 
       - name: Create Release
