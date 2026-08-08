@@ -55,13 +55,6 @@ jobs:
           echo "BUILD_TOOL_VERSION=$BUILD_TOOL_VERSION" >> $GITHUB_ENV
           echo Last build tool version is: $BUILD_TOOL_VERSION
 
-
-      - name: Create Release
-        uses: actions/upload-artifact@v4
-        with:
-          name: Epubator
-          path: ${{ env.SIGNED_RELEASE_FILE }}
-
       - name: Download Artifacts
         uses: actions/download-artifact@v4
         with:
